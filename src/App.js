@@ -1,17 +1,17 @@
-import logo from './logo.svg';
+import { Route, Routes } from "react-router-dom";
 import StartPage from "./components/StartPage";
-import {Route, Routes} from "react-router-dom";
 import FinalPage from "./components/FinalPage";
+import VideoCallLayout from "./layout/VideoCallLayout";
 
 function App() {
   return (
-    <div className="App">
+    <VideoCallLayout>
       <Routes>
-          <Route path="/" element={<StartPage/>}/>
-          <Route path="/pbp" element={<StartPage/>}/>
-          <Route path="/export-pdf" element={<FinalPage/>}/>
+        <Route path="/" element={<StartPage />} />
+        <Route path="/pbp" element={<StartPage />} />
+        <Route path="/export-pdf" element={<FinalPage />} />
       </Routes>
-    </div>
+    </VideoCallLayout>
   );
 }
 

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {useNavigate} from "react-router-dom";
+import './App.css';
+import { useNavigate } from "react-router-dom";
+import logo from "../components/homelander.png";
+
 
 const StartPage = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -53,53 +56,75 @@ const StartPage = () => {
             className="d-flex vh-100 justify-content-center align-items-center p-3"
             style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}
         >
-            <div
-                className="card shadow w-100"
-                style={{ maxWidth: '480px', background: 'linear-gradient(145deg, #ffffff 0%, #e6f0ff 100%)' }}
-            >
-                <div className="card-body">
-                    <h2 className="card-title text-center mb-4">Kết Ka </h2>
-                    {/* Đồng hồ */}
-                    <div className="mb-4 text-center">
-                        <p className="text-secondary fs-6 mb-1">{currentTime.toLocaleDateString('vi-VN')}</p>
-                        <p className="fw-bold text-primary fs-3 mb-0">{currentTime.toLocaleTimeString('vi-VN')}</p>
-                    </div>
+            <div style={{ position: "relative", width: "100%", maxWidth: "480px" }}>
 
-                    {/* Họ tên */}
-                    <div className="mb-4">
-                        <label className="form-label fw-bold fs-5">Nhân viên</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className={`form-control form-control-lg ${errors.name ? 'is-invalid' : ''}`}
-                            placeholder="Nhập tên nhân viên..."
-                        />
-                        {errors.name && <div className="text-danger mt-1">{errors.name}</div>}
-                    </div>
+                {/* Ảnh đầu */}
+                <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        style={{
+                            width: "50%",
+                            objectFit: "cover",
+                        }}
+                    />
+                </div>
 
-                    {/* Tiền đầu ca */}
-                    <div className="mb-4">
-                        <label className="form-label fw-bold fs-5">Tiền đầu ca (VND)</label>
-                        <input
-                            type="text"
-                            value={formatMoney(initialMoney)}
-                            onChange={(e) => setInitialMoney(e.target.value.replace(/\D/g, ''))} // chỉ giữ số
-                            className={`form-control form-control-lg ${errors.money ? 'is-invalid' : ''}`}
-                            placeholder="Nhập đầu ca..."
-                        />
-                        {errors.money && <div className="text-danger mt-1">{errors.money}</div>}
-                    </div>
+                {/* Card đè lên ảnh */}
+                <div
+                    className="card shadow w-100 animated-gradient led-border"
+                    style={{
+                        position: "relative",
+                        top: "-60px", // đẩy card lên chồng vào ảnh
+                        borderRadius: "15px",
+                    }}
+                >
+                    <div className="card-body">
+                        <h2 className="card-title text-center mb-4">Kết Ca</h2>
 
-                    <div className="d-grid mt-4">
-                        <button className="btn btn-primary btn-lg" onClick={handleClick}>
-                            OK
-                        </button>
+                        {/* Đồng hồ */}
+                        <div className="mb-4 text-center">
+                            <p className="text-secondary fs-6 mb-1">{currentTime.toLocaleDateString('vi-VN')}</p>
+                            <p className="fw-bold text-primary fs-3 mb-0">{currentTime.toLocaleTimeString('vi-VN')}</p>
+                        </div>
+
+                        {/* Họ tên */}
+                        <div className="mb-4">
+                            <label className="form-label fw-bold fs-5">Nhân viên</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className={`form-control form-control-lg ${errors.name ? 'is-invalid' : ''}`}
+                                placeholder="Nhập tên nhân viên..."
+                            />
+                            {errors.name && <div className="text-danger mt-1">{errors.name}</div>}
+                        </div>
+
+                        {/* Tiền đầu ca */}
+                        <div className="mb-4">
+                            <label className="form-label fw-bold fs-5">Tiền đầu ca (VND)</label>
+                            <input
+                                type="text"
+                                value={formatMoney(initialMoney)}
+                                onChange={(e) => setInitialMoney(e.target.value.replace(/\D/g, ''))}
+                                className={`form-control form-control-lg ${errors.money ? 'is-invalid' : ''}`}
+                                placeholder="Nhập đầu ca..."
+                            />
+                            {errors.money && <div className="text-danger mt-1">{errors.money}</div>}
+                        </div>
+
+                        <div className="d-grid mt-4">
+                            <button className="btn btn-primary btn-lg" onClick={handleClick}>
+                                OK
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     );
+
 };
 
 export default StartPage;

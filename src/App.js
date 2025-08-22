@@ -1,5 +1,4 @@
 import logo from './logo.svg';
-import './App.css';
 import StartPage from "./components/StartPage";
 import {Route, Routes} from "react-router-dom";
 import FinalPage from "./components/FinalPage";

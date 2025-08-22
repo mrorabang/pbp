@@ -1,6 +1,5 @@
 {
   "name": "pbp",
-  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -26,6 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "https://mrorabang.github.io/pbp",
   "eslintConfig": {
     "extends": [
       "react-app",

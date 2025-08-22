@@ -9,6 +9,7 @@ function App() {
     <div className="App">
       <Routes>
           <Route path="/" element={<StartPage/>}/>
+          <Route path="/pbp" element={<StartPage/>}/>
           <Route path="/export-pdf" element={<FinalPage/>}/>
       </Routes>
     </div>

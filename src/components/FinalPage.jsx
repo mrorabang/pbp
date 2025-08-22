@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FinalPage = () => {
     const [startName, setStartName] = useState('');
@@ -87,6 +87,7 @@ const FinalPage = () => {
             className="d-flex min-vh-100 justify-content-center align-items-center p-3"
             style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}
         >
+          
             <div
                 className="card shadow w-100 position-relative"
                 style={{
@@ -96,14 +97,14 @@ const FinalPage = () => {
                     background: 'linear-gradient(145deg, #ffffff 0%, #e6f0ff 100%)'
                 }}
             >
-                {/* Nút Back góc trái */}
-                <button
-                    className="btn btn-outline-secondary fs-6 position-absolute"
-                    style={{ top: '10px', left: '10px' }}
-                    onClick={() => window.history.back()}
-                >
-                    Back
-                </button>
+                <div className="p-3 border-bottom d-flex justify-content-start">
+    <button
+      className="btn btn-outline-secondary btn-sm"
+      onClick={() => window.history.back()}
+    >
+      ← Back
+    </button>
+  </div>
 
                 <div className="card-body p-4">
                     <h2 className="card-title text-center mb-4">Báo cáo doanh thu trong ca</h2>

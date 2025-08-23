@@ -63,42 +63,34 @@ const FinalPage = () => {
 
     const savePNG = async () => {
         try {
-            const element = document.getElementById("report-content");
-            if (!element) {
-                throw new Error("Không tìm thấy nội dung báo cáo để xuất PNG");
-            }
-
+            const element = document.getElementById('report-content');
             const canvas = await html2canvas(element, { scale: 2 });
-            const blob = await new Promise((res, rej) =>
-                canvas.toBlob((b) => (b ? res(b) : rej(new Error("Không thể tạo ảnh"))), "image/png")
-            );
+            const dataUrl = canvas.toDataURL('image/png');
+            const fileName = `Bao_cao_${currentTime.toLocaleDateString('vi-VN')}.png`;
 
-            const fileName = `Bao_cao_${new Date().toLocaleDateString("vi-VN")}.png`;
+            // Detect iOS Safari
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-            if (
-                navigator.canShare &&
-                navigator.canShare({
-                    files: [new File([blob], fileName, { type: "image/png" })],
-                })
-            ) {
-                await navigator.share({
-                    files: [new File([blob], fileName, { type: "image/png" })],
-                    title: "Báo cáo doanh thu",
-                    text: "Xem báo cáo doanh thu trong ca",
-                });
+            if (isIOS) {
+                // Trên iOS Safari không hỗ trợ download -> mở tab mới
+                window.open(dataUrl, '_blank');
+                toast.success('Đang mở ảnh trong tab mới, bạn hãy nhấn giữ để lưu về máy');
             } else {
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
+                // Browser bình thường: tải trực tiếp
+                const link = document.createElement('a');
+                link.href = dataUrl;
                 link.download = fileName;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                toast.success('Xuất PNG thành công');
             }
         } catch (error) {
-            console.error("Lỗi khi xuất PNG:", error);
-            toast.error("❌ Xuất PNG thất bại: " + error.message);
+            console.error('Lỗi khi xuất PNG:', error);
+            toast.error('Xuất PNG thất bại:' + error);
         }
     };
+
 
 
     return (

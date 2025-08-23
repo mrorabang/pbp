@@ -59,7 +59,7 @@ const StartPage = () => {
             <div style={{ position: "relative", width: "100%", maxWidth: "480px" }}>
 
                 {/* Ảnh đầu */}
-                <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
+                 <div style={{ width: "100%", height: "200px",marginLeft:'100px', overflow: "hidden" }}>
                     <img
                         src={logo}
                         alt="Logo"
@@ -68,7 +68,7 @@ const StartPage = () => {
                             objectFit: "cover",
                         }}
                     />
-                </div>
+                </div> 
 
                 {/* Card đè lên ảnh */}
                 <div
@@ -116,7 +116,23 @@ const StartPage = () => {
 
                         <div className="d-grid mt-4">
                             <button className="btn btn-primary btn-lg" onClick={handleClick}>
-                                OK
+                                Zô Nà
+                            </button>
+
+                            <button
+                                className="btn btn-outline-danger btn-lg mt-3"
+                                onClick={() => {
+                                    // Không cần validate, chỉ lưu tên và tiền nếu muốn
+                                    if (name.trim()) {
+                                        localStorage.setItem("startName", name);
+                                    }
+                                    if (initialMoney) {
+                                        localStorage.setItem("startMoney", initialMoney);
+                                    }
+                                    nav("/group-call"); // 👉 chuyển sang màn hình VideoCall
+                                }}
+                            >
+                                Video Call
                             </button>
                         </div>
                     </div>

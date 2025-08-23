@@ -10,7 +10,6 @@ const StartPage = () => {
     const [name, setName] = useState('');
     const [initialMoney, setInitialMoney] = useState('');
     const nav = useNavigate();
-    // State lưu lỗi
     const [errors, setErrors] = useState({ name: '', money: '' });
 
     useEffect(() => {
@@ -31,7 +30,7 @@ const StartPage = () => {
         const newErrors = { name: '', money: '' };
 
         if (!name.trim()) {
-            newErrors.name = 'Vui lòng nhập họ tên!';
+            newErrors.name = 'Vui lòng nhập tên!';
             valid = false;
         }
 

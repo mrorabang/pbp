@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import { toast } from "react-toastify";
 
 export default function GroupCall() {
   const meetingRef = useRef(null);
@@ -26,7 +27,7 @@ export default function GroupCall() {
         },
         showPreJoinView: false, // vào luôn không hỏi trước
         onLeaveRoom: () => {
-          window.location.href = "/"; // tự động về trang chủ
+          window.location.href = "/pbp/"; // tự động về trang chủ
         },
       });
     }

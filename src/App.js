@@ -13,7 +13,7 @@ function App() {
         <Route path="/group-call" element={<GroupCall />} />
         <Route path="/export-pdf" element={<FinalPage />} />
       </Routes>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={3000} />
 
     </>
 

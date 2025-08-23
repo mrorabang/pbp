@@ -55,9 +55,11 @@ const FinalPage = () => {
             };
 
             html2pdf().set(opt).from(element).save();
+            toast.success('Xuất PDF thành công');
+
         } catch (error) {
             console.error("Lỗi khi xuất PDF:", error);
-            toast.error("❌ Xuất PDF thất bại: " + error.message);
+            toast.error("Xuất PDF thất bại: " + error.message);
         }
     };
 

@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Widget,
   addResponseMessage,
-  addUserMessage,
 } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 
 const FullLayout = ({ children }) => {
   const chatApiUrl =
     "https://68ac9799b996fea1c08a5845.mockapi.io/api/chat/chat_history";
+  const [initialized, setInitialized] = useState(false);
+  const lastMessageIdRef = useRef(0);
+  const shownMessagesRef = useRef(new Set()); // ✅ lưu ID đã hiển thị
+  const pollRef = useRef(null);
   const [userId, setUserId] = useState("");
 
   // ✅ Tạo userId random khi mở web
@@ -22,35 +25,66 @@ const FullLayout = ({ children }) => {
     setUserId(storedId);
   }, []);
 
-  // ✅ Lấy lịch sử chat khi mở web
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        const res = await fetch(chatApiUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        let data = await res.json();
+  // ✅ Fetch lịch sử chat
+  const fetchChatHistory = async () => {
+    try {
+      const res = await fetch(chatApiUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      let data = await res.json();
 
-        data.sort((a, b) => Number(a.id) - Number(b.id));
+      // Sắp xếp theo id tăng dần
+      data.sort((a, b) => Number(a.id) - Number(b.id));
 
+      if (!initialized) {
+        // ✅ Lần đầu: load hết tin nhắn cũ (chỉ hiển thị tin của người khác)
         data.forEach((msg) => {
-          if (msg.sender !== userId) {
+          if (msg.sender !== userId && !shownMessagesRef.current.has(msg.id)) {
             addResponseMessage(`${msg.sender}: ${msg.message}`);
-          } else {
-            addUserMessage(msg.message); // ✅ hiện lại tin của mình
+            shownMessagesRef.current.add(msg.id); // lưu lại
           }
         });
-      } catch (err) {
-        console.error("Fetch chat history error:", err);
+
+        // Ghi nhớ id cuối cùng
+        if (data.length > 0) {
+          lastMessageIdRef.current = Number(data[data.length - 1].id);
+        }
+
+        setInitialized(true);
+      } else {
+        // ✅ Sau đó: chỉ add tin nhắn mới (và chưa hiển thị)
+        const newMessages = data.filter(
+          (msg) =>
+            Number(msg.id) > lastMessageIdRef.current &&
+            !shownMessagesRef.current.has(msg.id)
+        );
+
+        newMessages.forEach((msg) => {
+          if (msg.sender !== userId) {
+            addResponseMessage(`${msg.sender}: ${msg.message}`);
+            shownMessagesRef.current.add(msg.id); // đánh dấu đã hiển thị
+          }
+        });
+
+        if (newMessages.length > 0) {
+          lastMessageIdRef.current = Number(
+            newMessages[newMessages.length - 1].id
+          );
+        }
       }
-    };
+    } catch (err) {
+      console.error("Fetch chat history error:", err);
+    }
+  };
 
-    if (userId) fetchChatHistory();
-  }, [userId]);
+  // ✅ Poll mỗi 2s
+  useEffect(() => {
+    fetchChatHistory();
+    pollRef.current = setInterval(fetchChatHistory, 2000);
+    return () => clearInterval(pollRef.current);
+  }, []);
 
-  // ✅ Gửi tin nhắn mới
+  // ✅ Xử lý gửi tin nhắn
   const handleNewUserMessage = async (newMessage) => {
-    console.log("Người dùng gửi:", newMessage);
-
     const newMsg = {
       sender: userId,
       message: newMessage,
@@ -58,11 +92,16 @@ const FullLayout = ({ children }) => {
     };
 
     try {
-      await fetch(chatApiUrl, {
+      const res = await fetch(chatApiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newMsg),
       });
+      const saved = await res.json();
+
+      // ⚡ Sau khi gửi thì lưu vào shownMessagesRef để tránh hiển thị lại
+      shownMessagesRef.current.add(saved.id);
+      lastMessageIdRef.current = Number(saved.id);
     } catch (err) {
       console.error("Send message error:", err);
     }

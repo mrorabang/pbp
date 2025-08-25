@@ -1,18 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Widget,
   addResponseMessage,
   addUserMessage,
-  toggleWidget,
 } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 
 const FullLayout = ({ children }) => {
   const chatApiUrl =
     "https://68ac9799b996fea1c08a5845.mockapi.io/api/chat/chat_history";
-  const [initialized, setInitialized] = useState(false);
-  const lastMessageIdRef = useRef(0);
-  const pollRef = useRef(null);
   const [userId, setUserId] = useState("");
 
   // ✅ Tạo userId random khi mở web
@@ -26,53 +22,32 @@ const FullLayout = ({ children }) => {
     setUserId(storedId);
   }, []);
 
-  // Fetch lịch sử chat
-  const fetchChatHistory = async () => {
-    try {
-      const res = await fetch(chatApiUrl);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      let data = await res.json();
+  // ✅ Lấy lịch sử chat khi mở web
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      try {
+        const res = await fetch(chatApiUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        let data = await res.json();
 
-      data.sort((a, b) => Number(a.id) - Number(b.id));
+        data.sort((a, b) => Number(a.id) - Number(b.id));
 
-      if (!initialized) {
-        // ✅ chỉ add tin của người khác
         data.forEach((msg) => {
           if (msg.sender !== userId) {
             addResponseMessage(`${msg.sender}: ${msg.message}`);
+          } else {
+            addUserMessage(msg.message); // ✅ hiện lại tin của mình
           }
         });
-        if (data.length > 0) {
-          lastMessageIdRef.current = Number(data[data.length - 1].id);
-        }
-        setInitialized(true);
-      } else {
-        const newMessages = data.filter(
-          (msg) => Number(msg.id) > lastMessageIdRef.current
-        );
-        newMessages.forEach((msg) => {
-          if (msg.sender !== userId) {
-            addResponseMessage(`${msg.sender}: ${msg.message}`);
-          }
-        });
-        if (newMessages.length > 0) {
-          lastMessageIdRef.current = Number(
-            newMessages[newMessages.length - 1].id
-          );
-        }
+      } catch (err) {
+        console.error("Fetch chat history error:", err);
       }
-    } catch (err) {
-      console.error("Fetch chat history error:", err);
-    }
-  };
+    };
 
-  useEffect(() => {
-    fetchChatHistory();
+    if (userId) fetchChatHistory();
+  }, [userId]);
 
-    pollRef.current = setInterval(fetchChatHistory, 3000);
-    return () => clearInterval(pollRef.current);
-  }, []);
-
+  // ✅ Gửi tin nhắn mới
   const handleNewUserMessage = async (newMessage) => {
     console.log("Người dùng gửi:", newMessage);
 

@@ -67,7 +67,6 @@ const FullLayout = ({ children }) => {
   };
 
   useEffect(() => {
-    toggleWidget();
     fetchChatHistory();
 
     pollRef.current = setInterval(fetchChatHistory, 3000);
@@ -76,9 +75,6 @@ const FullLayout = ({ children }) => {
 
   const handleNewUserMessage = async (newMessage) => {
     console.log("Người dùng gửi:", newMessage);
-
-    // ✅ chỉ add vào UI ở đây, không cần fetch lại
-    // addUserMessage(newMessage);
 
     const newMsg = {
       sender: userId,
@@ -104,7 +100,7 @@ const FullLayout = ({ children }) => {
       <Widget
         handleNewUserMessage={handleNewUserMessage}
         title="Nhóm chat Phan Bá Phiến"
-        subtitle={userId}
+        subtitle="Created by Minh Quân AP"
       />
     </div>
   );

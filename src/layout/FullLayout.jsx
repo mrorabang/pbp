@@ -8,11 +8,12 @@ import "react-chat-widget/lib/styles.css";
 const FullLayout = ({ children }) => {
   const chatApiUrl =
     "https://68ac9799b996fea1c08a5845.mockapi.io/api/chat/chat_history";
+
   const [initialized, setInitialized] = useState(false);
   const lastMessageIdRef = useRef(0);
-  const shownMessagesRef = useRef(new Set()); // ✅ lưu ID đã hiển thị
   const pollRef = useRef(null);
   const [userId, setUserId] = useState("");
+  const shownMessagesRef = useRef(new Set()); // tránh nạp lại tin nhắn cũ
 
   // ✅ Tạo userId random khi mở web
   useEffect(() => {
@@ -25,6 +26,30 @@ const FullLayout = ({ children }) => {
     setUserId(storedId);
   }, []);
 
+  // ✅ format thời gian từ Unix timestamp
+  const formatDate = (ts) => {
+    const d = new Date(ts * 1000); // ts là giây
+    const today = new Date();
+
+    // nếu cùng ngày thì chỉ hiển thị giờ:phút
+    if (
+      d.getDate() === today.getDate() &&
+      d.getMonth() === today.getMonth() &&
+      d.getFullYear() === today.getFullYear()
+    ) {
+      return d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    // khác ngày thì hiện cả ngày giờ
+    return d.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   // ✅ Fetch lịch sử chat
   const fetchChatHistory = async () => {
     try {
@@ -36,32 +61,33 @@ const FullLayout = ({ children }) => {
       data.sort((a, b) => Number(a.id) - Number(b.id));
 
       if (!initialized) {
-        // ✅ Lần đầu: load hết tin nhắn cũ (chỉ hiển thị tin của người khác)
+        // ✅ Lần đầu: load hết tin nhắn cũ
         data.forEach((msg) => {
-          if (msg.sender !== userId && !shownMessagesRef.current.has(msg.id)) {
-            addResponseMessage(`${msg.sender}: ${msg.message}`);
-            shownMessagesRef.current.add(msg.id); // lưu lại
+          if (!shownMessagesRef.current.has(msg.id)) {
+            addResponseMessage(
+              `[${formatDate(msg.date)}] ${msg.sender}: ${msg.message}`
+            );
+            shownMessagesRef.current.add(msg.id);
           }
         });
 
-        // Ghi nhớ id cuối cùng
         if (data.length > 0) {
           lastMessageIdRef.current = Number(data[data.length - 1].id);
         }
 
         setInitialized(true);
       } else {
-        // ✅ Sau đó: chỉ add tin nhắn mới (và chưa hiển thị)
+        // ✅ Sau đó: chỉ add tin nhắn mới
         const newMessages = data.filter(
-          (msg) =>
-            Number(msg.id) > lastMessageIdRef.current &&
-            !shownMessagesRef.current.has(msg.id)
+          (msg) => Number(msg.id) > lastMessageIdRef.current
         );
 
         newMessages.forEach((msg) => {
-          if (msg.sender !== userId) {
-            addResponseMessage(`${msg.sender}: ${msg.message}`);
-            shownMessagesRef.current.add(msg.id); // đánh dấu đã hiển thị
+          if (!shownMessagesRef.current.has(msg.id)) {
+            addResponseMessage(
+              `[${formatDate(msg.date)}] ${msg.sender}: ${msg.message}`
+            );
+            shownMessagesRef.current.add(msg.id);
           }
         });
 

@@ -63,35 +63,35 @@ const FinalPage = () => {
         }
     };
 
-    const savePNG = async () => {
-        try {
-            const element = document.getElementById('report-content');
-            const canvas = await html2canvas(element, { scale: 2 });
-            const dataUrl = canvas.toDataURL('image/png');
-            const fileName = `Bao_cao_${currentTime.toLocaleDateString('vi-VN')}.png`;
 
-            // Detect iOS Safari
-            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    async function savePNG() {
+        const element = document.getElementById("report-content");
 
-            if (isIOS) {
-                // Trên iOS Safari không hỗ trợ download -> mở tab mới
-                window.open(dataUrl, '_blank');
-                toast.success('Đang mở ảnh trong tab mới, bạn hãy nhấn giữ để lưu về máy');
-            } else {
-                // Browser bình thường: tải trực tiếp
-                const link = document.createElement('a');
-                link.href = dataUrl;
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                toast.success('Xuất PNG thành công');
-            }
-        } catch (error) {
-            console.error('Lỗi khi xuất PNG:', error);
-            toast.error('Xuất PNG thất bại:' + error);
-        }
-    };
+        // Chụp element thành canvas
+        const canvas = await html2canvas(element, { scale: 2 });
+
+        // Tạo canvas mới to hơn
+        const padding = 40; // khoảng trắng bao quanh
+        const finalCanvas = document.createElement("canvas");
+        const ctx = finalCanvas.getContext("2d");
+
+        finalCanvas.width = canvas.width + padding * 2;
+        finalCanvas.height = canvas.height + padding * 2;
+
+        // Vẽ nền trắng
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+        // Vẽ ảnh gốc vào giữa
+        ctx.drawImage(canvas, padding, padding);
+
+        // Xuất PNG
+        const dataUrl = finalCanvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `Kết ca của ${startName}.png`;
+        link.click();
+    }
 
 
 

@@ -58,7 +58,7 @@ const StartPage = () => {
             <div style={{ position: "relative", width: "100%", maxWidth: "480px" }}>
 
                 {/* Ảnh đầu */}
-                 <div style={{ width: "100%", height: "200px",marginLeft:'100px', overflow: "hidden" }}>
+                <div style={{ width: "100%", height: "200px", marginLeft: '100px', overflow: "hidden" }}>
                     <img
                         src={logo}
                         alt="Logo"
@@ -67,7 +67,7 @@ const StartPage = () => {
                             objectFit: "cover",
                         }}
                     />
-                </div> 
+                </div>
 
                 {/* Card đè lên ảnh */}
                 <div
@@ -134,6 +134,11 @@ const StartPage = () => {
                                 Video Call
                             </button>
                         </div>
+
+                        <div className="text-center mt-3 mb-2 blinking-text" style={{ fontSize: "0.85rem" }}>
+                            © All rights reserved. Minh Quan
+                        </div>
+
                     </div>
                 </div>
             </div>

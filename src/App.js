@@ -9,7 +9,6 @@ function App() {
   return (
     <>
       <Routes>
-        {/* Các route bọc trong FullLayout */}
         <Route
           path="/"
           element={

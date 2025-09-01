@@ -114,3 +114,23 @@
     background-position: 0% 50%;
   }
 }
+
+@keyframes blinkColors {
+  0%   { color: #ff0000; }   /* đỏ */
+  10%  { color: #ff7f00; }   /* cam */
+  20%  { color: #ffff00; }   /* vàng */
+  30%  { color: #7fff00; }   /* xanh lá nhạt */
+  40%  { color: #00ff00; }   /* xanh lá */
+  50%  { color: #00ff7f; }   /* xanh ngọc */
+  60%  { color: #00ffff; }   /* xanh dương nhạt */
+  70%  { color: #007fff; }   /* xanh dương */
+  80%  { color: #0000ff; }   /* xanh đậm */
+  90%  { color: #7f00ff; }   /* tím */
+  100% { color: #ff0000; }   /* đỏ trở lại */
+}
+
+.blinking-text {
+  animation: blinkColors 5s linear infinite;
+}
+
+
